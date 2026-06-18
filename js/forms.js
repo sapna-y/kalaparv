@@ -241,7 +241,7 @@ function sendWhatsAppConfirmation(formData) {
 
   // Open WhatsApp with pre-filled message (for self-notification)
   console.log(`📱 WhatsApp confirmation ready for: ${formData.name}`);
-  console.log(`WhatsApp URL: https://wa.me/919891956150?text=${message}`);
+  console.log(`WhatsApp URL: https://wa.me/918920640997?text=${message}`);
 }
 
 // ===== Contact Form =====
@@ -249,7 +249,7 @@ const contactForm = document.getElementById('contactFormEl');
 
 if (contactForm) {
   // Real-time validation
-  const inputs = contactForm.querySelectorAll('.form-input, .form-textarea');
+  const inputs = contactForm.querySelectorAll('.form-input, .form-textarea, .form-select');
   inputs.forEach(input => {
     input.addEventListener('blur', () => validateContactField(input));
     input.addEventListener('input', () => {
@@ -281,6 +281,10 @@ if (contactForm) {
           showError('contactEmailGroup', false);
         }
         break;
+      case 'category':
+        isValid = input.value !== '';
+        showError('contactCategoryGroup', !isValid);
+        break;
       case 'message':
         isValid = validateRequired(input.value);
         showError('contactMessageGroup', !isValid);
@@ -296,6 +300,7 @@ if (contactForm) {
     const name = document.getElementById('contactName').value;
     const phone = document.getElementById('contactPhone').value;
     const email = document.getElementById('contactEmail').value;
+    const category = document.getElementById('contactCategory').value;
     const message = document.getElementById('contactMessage').value;
 
     // Validate
@@ -310,36 +315,57 @@ if (contactForm) {
     if (email && !validateEmail(email)) { showError('contactEmailGroup'); isFormValid = false; }
     else showError('contactEmailGroup', false);
 
+    if (!category) { showError('contactCategoryGroup'); isFormValid = false; }
+    else showError('contactCategoryGroup', false);
+
     if (!validateRequired(message)) { showError('contactMessageGroup'); isFormValid = false; }
     else showError('contactMessageGroup', false);
 
     if (!isFormValid) return;
 
+    // Disable submit button during submission
+    const submitBtn = document.getElementById('contactSubmitBtn');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Submitting...';
+    }
+
     // Store message
-    const formData = { name, phone, email, message, timestamp: new Date().toISOString() };
+    const formData = { name, phone, email, category, message, timestamp: new Date().toISOString() };
     const messages = JSON.parse(localStorage.getItem('kalaparv_messages') || '[]');
     messages.push(formData);
     localStorage.setItem('kalaparv_messages', JSON.stringify(messages));
 
     console.log('📩 Contact form submitted:', formData);
 
-    // Email notification via EmailJS (placeholder)
-    // To set up EmailJS:
-    // 1. Create account at https://www.emailjs.com/
-    // 2. Add email service (Gmail: sapna.daxton@gmail.com)
-    // 3. Create email template
-    // 4. Replace SERVICE_ID, TEMPLATE_ID, PUBLIC_KEY below
-    /*
-    emailjs.send('SERVICE_ID', 'TEMPLATE_ID', {
-      from_name: name,
-      from_phone: phone,
-      from_email: email || 'Not provided',
-      message: message,
-      to_email: 'sapna.daxton@gmail.com'
-    }, 'PUBLIC_KEY')
-    .then(() => console.log('Email sent successfully'))
-    .catch((err) => console.error('Email failed:', err));
-    */
+    // Send email submission via FormSubmit AJAX endpoint
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/kalaparv.festival@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          "Full Name": name,
+          "Phone Number": phone,
+          "Email Address": email || "Not provided",
+          "Query Category": category,
+          "Message": message,
+          "Date & Time of Submission": new Date().toLocaleString(),
+          "_subject": `New Kalaparv Query - ${category}`
+        })
+      });
+      const data = await response.json();
+      console.log('✅ FormSubmit Success:', data);
+    } catch (err) {
+      console.error('❌ FormSubmit Error:', err);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="icon-3d"><img src="/assets/icons/icon_target.png" alt="Send"></span> Submit Query';
+      }
+    }
 
     showConfirmation();
   });

@@ -10,6 +10,7 @@ export default defineConfig({
         register: resolve(__dirname, 'register.html'),
         academy: resolve(__dirname, 'academy.html'),
         contact: resolve(__dirname, 'contact.html'),
+        gallery: resolve(__dirname, 'gallery.html'),
       },
     },
   },
