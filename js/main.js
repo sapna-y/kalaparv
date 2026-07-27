@@ -100,8 +100,8 @@ revealElements.forEach(el => {
 
 // ===== Countdown Timer =====
 function initCountdown() {
-  // Event date: October 1, 2026
-  const eventDate = new Date('2026-10-01T09:00:00').getTime();
+  // Event date: October 2, 2026
+  const eventDate = new Date('2026-10-02T09:00:00').getTime();
 
   const countDays = document.getElementById('countDays');
   const countHours = document.getElementById('countHours');
