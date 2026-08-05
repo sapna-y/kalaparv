@@ -3344,7 +3344,7 @@ h4 { font-size: clamp(1.1rem, 2vw, 1.3rem); }
 
 /* ===== KalaParv Vol-3 Announcement Banner (Compact) ===== */
 .vol3-announcement {
-  background: rgba(13, 13, 26, 0.7);
+  background: rgba(13, 13, 26, 0.75);
   border: 1px solid rgba(255, 107, 0, 0.25);
   border-radius: 50px;
   padding: 0.4rem 0.6rem 0.4rem 1.2rem;
@@ -3361,6 +3361,13 @@ h4 { font-size: clamp(1.1rem, 2vw, 1.3rem); }
   gap: 0.75rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05);
   animation: fadeInUp 0.8s ease-out both;
+  transition: all 0.3s ease;
+}
+
+.vol3-announcement:hover {
+  border-color: rgba(255, 107, 0, 0.5);
+  box-shadow: 0 10px 40px rgba(255, 107, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .vol3-announcement .announcement-badge {
@@ -3376,15 +3383,6 @@ h4 { font-size: clamp(1.1rem, 2vw, 1.3rem); }
   color: var(--clr-accent-gold);
   letter-spacing: 1px;
   text-transform: uppercase;
-}
-
-.vol3-announcement .announcement-title {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--clr-white);
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
 }
 
 .vol3-announcement .announcement-separator {
@@ -3418,9 +3416,13 @@ h4 { font-size: clamp(1.1rem, 2vw, 1.3rem); }
   .vol3-announcement .announcement-separator {
     display: none;
   }
-  .vol3-announcement .announcement-title {
-    text-align: center;
-  }
 }
 
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 107, 0, 0.4); transform: scale(1); }
+  50% { box-shadow: 0 0 30px rgba(255, 107, 0, 0.7); transform: scale(1.03); }
+}
 
+.btn-gateway-pulse {
+  animation: btnPulse 2s infinite ease-in-out;
+}
